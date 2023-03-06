@@ -1,4 +1,6 @@
+
 #include <LiquidCrystal.h>
+
 //to be replaced
 byte running = 0;
 
@@ -17,14 +19,14 @@ namespace display {
 
 
     byte prevBut = 0, prevCmd = 0;
-#define s1 6
-#define s2 7
-#define s3 8
-#define s4 9
-#define s5 10
-#define s6 13
-#define s7 A1
-#define s8 A2
+    #define s1 6
+    #define s2 7
+    #define s3 8
+    #define s4 9
+    #define s5 10
+    #define s6 13
+    #define s7 A1
+    #define s8 A2
 
 
     const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
@@ -253,6 +255,7 @@ namespace display {
                 lcd.write(1);
                 lcd.setCursor(15, 0);
                 lcd.write(2);
+                lcd.setCursor(0, 1);
                 lcd.setCursor(1, 0);
                 lcd.print("     MIN      ");
                 lcd.setCursor(4, 1);
@@ -264,6 +267,7 @@ namespace display {
                 lcd.write(1);
                 lcd.setCursor(15, 0);
                 lcd.write(2);
+                lcd.setCursor(0, 1);
                 lcd.setCursor(1, 0);
                 lcd.print("     MID      ");
                 lcd.setCursor(4, 1);
@@ -275,6 +279,7 @@ namespace display {
                 lcd.write(1);
                 lcd.setCursor(15, 0);
                 lcd.write(2);
+                lcd.setCursor(0, 1);
                 lcd.setCursor(1, 0);
                 lcd.print("     MAX      ");
                 lcd.setCursor(4, 1);
@@ -613,47 +618,48 @@ namespace display {
                                 }
                             }
                             else if ((state >> 5) == 0 && ((state >> 3) & 3) == 2) {
-                                if (curCmd == 1 && prevCmd != 1) {
+                                    if (curCmd == 1 && prevCmd != 1) {
                                     state = 53;
-                                    prevCmd = curCmd;
+                                        prevCmd = curCmd;
+                                    }
                                 }
                             }
-                        }
-                        else {
-                            insert = state >> 3;
-                            insert &= 3;
+                            else {
+                                insert = state >> 3;
+                                insert &= 3;
 
-                            if (insert == 1) {
 
-                                insert = 7 << 5;
-                                insert &= state;
-                                byte currentDataIndex = insert >> 5;
-
-                                if (state >> 5 == 0) {
-
-                                    if (curCmd == 1 && prevCmd != 1) {
-                                        state += pow(2, 5);
-                                        currentDataIndex = 1;
-                                        prevCmd = curCmd;
-                                    }
-                                }
-                                else {
-
-                                    if (curCmd == 4 && prevCmd != 4) {
-                                        currentDataIndex++;
-                                        prevCmd = curCmd;
-                                    }
-                                    else if (curCmd == 8 && prevCmd != 8) {
-                                        currentDataIndex--;
-                                        prevCmd = curCmd;
-                                    }
-                                    if (currentDataIndex < 1) currentDataIndex = 4;
-                                    else if (currentDataIndex > 4) currentDataIndex = 1;
+                                if (insert == 1) {
 
                                     insert = 7 << 5;
-                                    insert = ~insert;
-                                    state &= insert;
-                                    state += (currentDataIndex << 5);
+                                    insert &= state;
+                                    byte currentDataIndex = insert >> 5;
+
+                                    if (state >> 5 == 0) {
+
+                                        if (curCmd == 1 && prevCmd != 1) {
+                                            state += pow(2, 5);
+                                            currentDataIndex = 1;
+                                            prevCmd = curCmd;
+                                        }
+                                    }
+                                    else {
+
+                                        if (curCmd == 4 && prevCmd != 4) {
+                                            currentDataIndex++;
+                                            prevCmd = curCmd;
+                                        }
+                                        else if (curCmd == 8 && prevCmd != 8) {
+                                            currentDataIndex--;
+                                            prevCmd = curCmd;
+                                        }
+                                        if (currentDataIndex < 1) currentDataIndex = 4;
+                                        else if (currentDataIndex > 4) currentDataIndex = 1;
+
+                                        insert = 7 << 5;
+                                        insert = ~insert;
+                                        state &= insert;
+                                        state += (currentDataIndex << 5);
 
                                     if (state >> 5 == 1) calibOption::calibData::mini();
                                     else if (state >> 5 == 2) calibOption::calibData::mid();
@@ -679,7 +685,7 @@ namespace display {
                                         }
                                     }
                                 }
-                            }
+                                    }
                             else if (insert == 2) {
 
                                 insert = 7 << 5;
@@ -693,18 +699,18 @@ namespace display {
 
                                         currentDataIndex = 1;
                                         prevCmd = curCmd;
-                                    }
                                 }
+                            }
                                 else {
 
                                     if (curCmd == 4 && prevCmd != 4) {
                                         currentDataIndex++;
                                         prevCmd = curCmd;
-                                    }
+                        }
                                     else if (curCmd == 8 && prevCmd != 8) {
                                         currentDataIndex--;
                                         prevCmd = curCmd;
-                                    }
+                    }
                                     if (currentDataIndex < 1) currentDataIndex = 5;
                                     else if (currentDataIndex > 5) currentDataIndex = 1;
 
@@ -840,25 +846,26 @@ namespace display {
 
 
         prevCmd = curCmd;
+    }
 
 
     }
 
 }
 
-    void setup() {
+void setup() {
 
-        display::init();
-        Serial.begin(9600);
-    }
+    display::init();
+    Serial.begin(9600);
+}
 
-    void loop() {
+void loop() {
 
-        display::run();
-        Serial.println(display::state);
+    display::run();
+    Serial.println(display::state);
         Serial.print("\t");
         Serial.print(display::time);
         Serial.print("\t");
 
-    }
+}
 
